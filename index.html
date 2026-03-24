@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Future Coasts Lite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      text-align:center;
+      background:#111;
+      color:white;
+      font-family:Arial;
+      margin:0;
+    }
+
+    canvas {
+      border:2px solid white;
+      margin-top:10px;
+      max-width:100%;
+    }
+
+    input[type=range] {
+      width:80%;
+      height:30px;
+    }
+
+    button {
+      margin:5px;
+      padding:10px;
+      border:none;
+      background:#00aaff;
+      color:white;
+      border-radius:5px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>🌊 Future Coasts Lite</h2>
+
+<input type="range" min="0" max="300" value="0" id="slider">
+<p>Sea Level: <span id="level">0</span></p>
+
+<div>
+  <button onclick="setLevel(50)">Low</button>
+  <button onclick="setLevel(150)">Medium</button>
+  <button onclick="setLevel(250)">Extreme</button>
+  <button onclick="resetGame()">Reset</button>
+</div>
+
+<canvas id="map" width="600" height="400"></canvas>
+
+<p id="stats"></p>
+
+<script>
+const canvas = document.getElementById("map");
+const ctx = canvas.getContext("2d");
+
+const slider = document.getElementById("slider");
+const levelText = document.getElementById("level");
+const stats = document.getElementById("stats");
+
+let houses = [];
+
+canvas.addEventListener("click", (e) => {
+  const rect = canvas.getBoundingClientRect();
+  houses.push({
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top
+  });
+  draw();
+});
+
+slider.addEventListener("input", () => {
+  levelText.innerText = slider.value;
+  draw();
+});
+
+function setLevel(v) {
+  slider.value = v;
+  levelText.innerText = v;
+  draw();
+}
+
+function resetGame() {
+  houses = [];
+  draw();
+}
+
+function draw() {
+  const seaLevel = parseInt(slider.value);
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "green";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "rgba(0,150,255,0.6)";
+  ctx.fillRect(0, canvas.height - seaLevel, canvas.width, seaLevel);
+
+  let floodedCount = 0;
+
+  houses.forEach(h => {
+    const flooded = h.y > canvas.height - seaLevel;
+    if (flooded) floodedCount++;
+
+    ctx.fillStyle = flooded ? "red" : "white";
+    ctx.fillRect(h.x-5, h.y-5, 10, 10);
+  });
+
+  let damage = floodedCount * 50000;
+
+  stats.innerText = `Houses: ${houses.length} | Flooded: ${floodedCount} | Damage: $${damage}`;
+}
+
+draw();
+</script>
+
+</body>
+</html>
