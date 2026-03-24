@@ -1,4 +1,1895 @@
-<!DOCTYPE html>
+<<html lang="en"><head>
+  <meta charset="UTF-8">
+  <title>Future Coasts Lite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --page-bg: #07101b;
+      --page-bg-mid: #040a13;
+      --page-bg-deep: #01050b;
+      --app-bg: rgba(8, 14, 24, 0.94);
+      --app-sheen: rgba(255, 255, 255, 0.08);
+      --panel: rgba(255, 255, 255, 0.045);
+      --panel-soft: rgba(255, 255, 255, 0.035);
+      --panel-border: rgba(255, 255, 255, 0.08);
+      --text: #f4f9ff;
+      --muted: #9fb4c2;
+      --muted-soft: #7f96a5;
+      --accent: #47c6ff;
+      --accent-strong: #1b8fc7;
+      --accent-deep: #11658e;
+      --accent-soft: rgba(71, 198, 255, 0.14);
+      --danger: #f46f6f;
+      --shadow:
+        0 18px 40px rgba(0, 0, 0, 0.28),
+        0 42px 120px rgba(0, 0, 0, 0.52);
+      --panel-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.16),
+        0 24px 44px rgba(0, 0, 0, 0.14);
+      --stat-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.18),
+        0 28px 54px rgba(0, 0, 0, 0.12);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Inter", "Avenir Next", "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      padding: 14px;
+      background:
+        radial-gradient(circle at top left, rgba(71, 198, 255, 0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(87, 104, 255, 0.12), transparent 24%),
+        radial-gradient(circle at 50% 120%, rgba(23, 101, 142, 0.14), transparent 34%),
+        linear-gradient(180deg, var(--page-bg) 0%, var(--page-bg-mid) 52%, var(--page-bg-deep) 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(140deg, rgba(255, 255, 255, 0.04), transparent 24%),
+        linear-gradient(180deg, transparent 0 78%, rgba(255, 255, 255, 0.04) 86%, transparent 94%);
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        repeating-linear-gradient(90deg, transparent 0 72px, rgba(255, 255, 255, 0.015) 72px 73px),
+        repeating-linear-gradient(180deg, transparent 0 72px, rgba(255, 255, 255, 0.012) 72px 73px);
+      opacity: 0.22;
+      pointer-events: none;
+      -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.65), transparent 85%);
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.65), transparent 85%);
+    }
+
+    .app {
+      position: relative;
+      width: min(100%, 1120px);
+      margin: auto 0;
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 34px;
+      background:
+        linear-gradient(180deg, rgba(22, 34, 49, 0.97) 0%, rgba(10, 17, 28, 0.99) 100%),
+        var(--app-bg);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .app::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top right, rgba(71, 198, 255, 0.16), transparent 26%),
+        radial-gradient(circle at 18% 12%, rgba(96, 112, 255, 0.08), transparent 24%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 18%);
+      pointer-events: none;
+    }
+
+    .app::after {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: 31px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.02);
+      pointer-events: none;
+    }
+
+    .app > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .app-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+      padding: 6px 2px 2px;
+      flex-wrap: wrap;
+    }
+
+    .app-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #91e3ff 0%, #37b4ea 58%, #1772a7 100%);
+      box-shadow:
+        0 0 0 7px rgba(71, 198, 255, 0.08),
+        0 8px 20px rgba(19, 117, 167, 0.28);
+    }
+
+    .brand-meta {
+      display: grid;
+      gap: 2px;
+    }
+
+    .brand-overline {
+      color: var(--muted-soft);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .brand-title {
+      color: var(--text);
+      font-size: 0.98rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .app-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .app-status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #58d89a;
+      box-shadow: 0 0 0 5px rgba(88, 216, 154, 0.1);
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--panel-shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .hero {
+      padding: 24px;
+      margin-bottom: 18px;
+      overflow: hidden;
+      background:
+        linear-gradient(145deg, rgba(18, 29, 42, 0.94), rgba(11, 18, 29, 0.92)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 24%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 18px 36px rgba(0, 0, 0, 0.16);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 14% 18%, rgba(116, 219, 255, 0.16), transparent 30%),
+        linear-gradient(120deg, rgba(255, 255, 255, 0.05), transparent 30%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -8% -54% auto;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(71, 198, 255, 0.16), transparent 66%);
+      pointer-events: none;
+    }
+
+    .hero-head {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .hero-copy {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      max-width: 720px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(63, 192, 255, 0.14);
+    }
+
+    .hero-subtitle {
+      margin: 0;
+      color: #d7e9f4;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      line-height: 1.45;
+    }
+
+    .hero-title {
+      margin: 0;
+      max-width: 12ch;
+      font-size: clamp(2.55rem, 6vw, 4.45rem);
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -0.07em;
+      text-wrap: balance;
+      text-shadow: 0 10px 30px rgba(10, 45, 63, 0.22);
+    }
+
+    .hero-title-accent {
+      color: #8edfff;
+      text-shadow: 0 0 32px rgba(90, 214, 255, 0.22);
+    }
+
+    .intro {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.65;
+      max-width: 60ch;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #d6ebf6;
+      font-size: 0.83rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .hero-tag::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #85e1ff, #2ca9e0);
+      box-shadow: 0 0 0 4px rgba(71, 198, 255, 0.08);
+    }
+
+    .hint {
+      width: 100%;
+      padding: 18px;
+      border-radius: 20px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+        rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 16px 30px rgba(0, 0, 0, 0.14);
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .hint-label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hint-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .hint-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .hint-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .hint-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(71, 198, 255, 0.08);
+      border: 1px solid rgba(71, 198, 255, 0.14);
+      color: #dff4fb;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .controls {
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.025)),
+        rgba(255, 255, 255, 0.02);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .section-copy {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .slider-card,
+    .button-card {
+      position: relative;
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.025)),
+        var(--panel-soft);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    .slider-card::before,
+    .button-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 30%);
+      pointer-events: none;
+    }
+
+    .slider-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .slider-label {
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .level-pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      margin: 0;
+      appearance: none;
+      background: transparent;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(63, 192, 255, 0.45), rgba(63, 192, 255, 0.9));
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      margin-top: -6px;
+      border: 2px solid white;
+      border-radius: 50%;
+      background: #0f2434;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 10px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(63, 192, 255, 0.45), rgba(63, 192, 255, 0.9));
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border: 2px solid white;
+      border-radius: 50%;
+      background: #0f2434;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+    }
+
+    .slider-note {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .slider-scale {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+      color: var(--muted-soft);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .button-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .button-card-note {
+      color: var(--muted-soft);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    button {
+      position: relative;
+      overflow: hidden;
+      min-height: 52px;
+      padding: 14px 18px;
+      border: 1px solid rgba(122, 223, 255, 0.2);
+      border-radius: 999px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.02)),
+        linear-gradient(180deg, #42c7ff 0%, #2498d6 58%, #1a7db6 100%);
+      color: white;
+      font: inherit;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      line-height: 1;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      transition:
+        transform 160ms ease,
+        box-shadow 160ms ease,
+        border-color 160ms ease,
+        background 160ms ease;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.24),
+        0 14px 28px rgba(21, 119, 168, 0.28);
+    }
+
+    button::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 38%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(157, 231, 255, 0.34);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.26),
+        0 18px 34px rgba(27, 125, 182, 0.34);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow:
+        inset 0 2px 6px rgba(8, 42, 61, 0.24),
+        0 8px 18px rgba(14, 79, 115, 0.22);
+    }
+
+    button:focus-visible {
+      outline: 3px solid rgba(122, 223, 255, 0.24);
+      outline-offset: 3px;
+    }
+
+    button.is-active {
+      border-color: rgba(179, 239, 255, 0.4);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.03)),
+        linear-gradient(180deg, #67d8ff 0%, #2aa7e1 56%, #1774aa 100%);
+      box-shadow:
+        0 0 0 2px rgba(126, 219, 255, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        0 18px 34px rgba(27, 125, 182, 0.34);
+    }
+
+    button.secondary {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+        rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.12);
+      color: #dcecf7;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        0 10px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    button.secondary:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        0 14px 26px rgba(0, 0, 0, 0.16);
+    }
+
+    button.secondary:active {
+      box-shadow:
+        inset 0 2px 6px rgba(0, 0, 0, 0.16),
+        0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .canvas-panel {
+      padding: 20px;
+      display: grid;
+      gap: 14px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.022)),
+        rgba(255, 255, 255, 0.02);
+    }
+
+    .canvas-stage {
+      position: relative;
+      padding: 16px;
+      border-radius: 28px;
+      background:
+        linear-gradient(180deg, rgba(17, 31, 45, 0.94), rgba(7, 14, 23, 0.96)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 30%);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 20px 44px rgba(0, 0, 0, 0.22);
+      overflow: hidden;
+    }
+
+    .canvas-stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 14% 12%, rgba(87, 201, 255, 0.12), transparent 28%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent 24%),
+        repeating-linear-gradient(90deg, transparent 0 88px, rgba(255, 255, 255, 0.014) 88px 89px),
+        repeating-linear-gradient(180deg, transparent 0 88px, rgba(255, 255, 255, 0.012) 88px 89px);
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    .canvas-stage::after {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: 27px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      pointer-events: none;
+    }
+
+    .canvas-stage-head {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .canvas-stage-chip,
+    .canvas-stage-status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #d9edf8;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .canvas-stage-status {
+      gap: 8px;
+      color: var(--muted);
+    }
+
+    .canvas-stage-status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #85e1ff, #2ca9e0);
+      box-shadow: 0 0 0 4px rgba(71, 198, 255, 0.08);
+    }
+
+    .canvas-board-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .board-kicker {
+      margin: 0 0 6px;
+      color: var(--muted-soft);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .board-title {
+      margin: 0;
+      font-size: 1.12rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .board-subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .board-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .legend-chip::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04);
+    }
+
+    .legend-chip.land::before {
+      background: #87bc71;
+    }
+
+    .legend-chip.shore::before {
+      background: #e7c886;
+    }
+
+    .legend-chip.water::before {
+      background: #55c8ff;
+    }
+
+    .canvas-frame {
+      position: relative;
+      padding: 14px;
+      border-radius: 30px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.02)),
+        linear-gradient(180deg, rgba(25, 41, 58, 0.99), rgba(8, 14, 22, 0.99));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+        0 24px 50px rgba(0, 0, 0, 0.22);
+      overflow: hidden;
+    }
+
+    .canvas-viewport {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .canvas-frame::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top, rgba(82, 207, 255, 0.14), transparent 32%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 24%);
+      pointer-events: none;
+    }
+
+    .canvas-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent 0 24%, rgba(255, 255, 255, 0.025) 24% 25%, transparent 25% 100%),
+        linear-gradient(180deg, transparent 0 18%, rgba(255, 255, 255, 0.02) 18% 19%, transparent 19% 100%),
+        radial-gradient(circle at 85% 82%, rgba(81, 199, 255, 0.08), transparent 20%);
+      pointer-events: none;
+      opacity: 0.55;
+    }
+
+    .water-edge {
+      --water-edge-y: 100%;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(var(--water-edge-y) - 7px);
+      height: 14px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 2;
+      transition:
+        top 180ms ease,
+        opacity 180ms ease;
+      mix-blend-mode: screen;
+    }
+
+    .water-edge.active {
+      opacity: 0.9;
+    }
+
+    .water-edge::before,
+    .water-edge::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      pointer-events: none;
+    }
+
+    .water-edge::before {
+      top: 6px;
+      height: 2px;
+      background:
+        linear-gradient(90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.68) 18%,
+          rgba(131, 230, 255, 0.96) 46%,
+          rgba(255, 255, 255, 0.72) 72%,
+          rgba(255, 255, 255, 0) 100%);
+      box-shadow:
+        0 0 10px rgba(116, 220, 255, 0.26),
+        0 0 20px rgba(116, 220, 255, 0.12);
+      animation: water-shimmer 5s linear infinite;
+    }
+
+    .water-edge::after {
+      top: 0;
+      height: 12px;
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2), transparent 68%);
+      filter: blur(2px);
+      opacity: 0.45;
+      animation: water-pulse 6s ease-in-out infinite;
+    }
+
+    .canvas-overlay {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 13px;
+      border-radius: 16px;
+      background: rgba(7, 16, 26, 0.76);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(10px);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .canvas-overlay-mark {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #7ae0ff, #2498d6);
+      box-shadow: 0 0 0 4px rgba(71, 198, 255, 0.14);
+    }
+
+    .canvas-overlay-copy {
+      display: grid;
+      gap: 2px;
+    }
+
+    .canvas-overlay-label {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .canvas-overlay-value {
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .canvas-corner-tag {
+      position: absolute;
+      right: 24px;
+      bottom: 24px;
+      z-index: 1;
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      background: rgba(7, 16, 26, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #d9edf7;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(10px);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+      border: 0;
+      border-radius: 20px;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+      touch-action: manipulation;
+      cursor: crosshair;
+    }
+
+    .canvas-note {
+      margin: 2px 0 0;
+      padding: 13px 14px;
+      border-radius: 16px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .stat-card {
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03)),
+        rgba(9, 18, 29, 0.94);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow: var(--stat-shadow);
+      display: grid;
+      gap: 16px;
+    }
+
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 4px;
+      background: linear-gradient(180deg, rgba(71, 198, 255, 0.95), rgba(27, 143, 199, 0.35));
+    }
+
+    .stat-card.is-flooded::before {
+      background: linear-gradient(180deg, rgba(255, 181, 107, 0.95), rgba(244, 111, 111, 0.4));
+    }
+
+    .stat-card.is-damage::before {
+      background: linear-gradient(180deg, rgba(244, 111, 111, 0.98), rgba(173, 58, 58, 0.4));
+    }
+
+    .stat-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .stat-label {
+      color: var(--muted-soft);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      display: block;
+      margin: 0;
+      font-size: clamp(2.5rem, 8vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.07em;
+      line-height: 0.88;
+      color: #f7fbff;
+    }
+
+    .stat-value.danger {
+      color: #ffc6c6;
+    }
+
+    .stat-note {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+
+    .stat-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .stat-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04);
+    }
+
+    .stat-badge.low {
+      color: #b8f0d0;
+      background: rgba(45, 150, 95, 0.18);
+      border-color: rgba(84, 196, 138, 0.24);
+    }
+
+    .stat-badge.watch {
+      color: #ffe184;
+      background: rgba(181, 128, 31, 0.2);
+      border-color: rgba(255, 196, 96, 0.26);
+    }
+
+    .stat-badge.high {
+      color: #ffb7b7;
+      background: rgba(169, 58, 58, 0.18);
+      border-color: rgba(244, 111, 111, 0.24);
+    }
+
+    .stat-badge.critical {
+      color: #ffc7c7;
+      background: rgba(169, 58, 58, 0.22);
+      border-color: rgba(244, 111, 111, 0.28);
+    }
+
+    .stats-shell {
+      margin-top: 16px;
+      padding: 18px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.022)),
+        rgba(255, 255, 255, 0.02);
+    }
+
+    .stats-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .stats-kicker {
+      margin: 0 0 6px;
+      color: var(--muted-soft);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .stats-title {
+      margin: 0;
+      font-size: 1.12rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .stats-copy {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .stats-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(71, 198, 255, 0.08);
+      border: 1px solid rgba(71, 198, 255, 0.14);
+      color: #daf3fb;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    @keyframes water-shimmer {
+      0% {
+        transform: translateX(-8%);
+        opacity: 0.6;
+      }
+
+      50% {
+        transform: translateX(8%);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateX(-8%);
+        opacity: 0.6;
+      }
+    }
+
+    @keyframes water-pulse {
+      0%,
+      100% {
+        transform: scaleX(0.985);
+        opacity: 0.32;
+      }
+
+      50% {
+        transform: scaleX(1.015);
+        opacity: 0.52;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .water-edge::before,
+      .water-edge::after {
+        animation: none;
+      }
+    }
+
+    @media (min-width: 680px) {
+      body {
+        padding: 22px;
+      }
+
+      .app {
+        padding: 22px;
+      }
+
+      .hero {
+        padding: 28px;
+      }
+
+      .hero-copy {
+        gap: 12px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 900px) {
+      .layout {
+        grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+      }
+
+      .button-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app-bar {
+        align-items: flex-start;
+      }
+
+      .hero {
+        padding: 20px;
+      }
+
+      .hero-copy {
+        gap: 8px;
+      }
+
+      .hero-subtitle {
+        font-size: 0.86rem;
+      }
+
+      .hero-title {
+        max-width: 10ch;
+      }
+
+      .button-grid,
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .slider-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .level-pill {
+        font-size: 0.9rem;
+      }
+
+      button {
+        min-height: 50px;
+        padding: 13px 16px;
+      }
+
+      .canvas-frame {
+        padding: 8px;
+      }
+
+      .canvas-stage {
+        padding: 12px;
+        border-radius: 24px;
+      }
+
+      .canvas-stage-head {
+        margin-bottom: 10px;
+      }
+
+      .canvas-board-head {
+        flex-direction: column;
+      }
+
+      .canvas-overlay {
+        top: 16px;
+        left: 16px;
+        right: 16px;
+        width: auto;
+      }
+
+      .canvas-corner-tag {
+        right: 16px;
+        bottom: 16px;
+      }
+
+      .canvas-note {
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      .stats-shell {
+        padding: 14px;
+      }
+
+      .stats-head {
+        margin-bottom: 14px;
+      }
+    }
+
+    @media (max-width: 899px) {
+      .hero-head {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="app-bar">
+      <div class="app-brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div class="brand-meta">
+          <span class="brand-overline">Premium Demo</span>
+          <span class="brand-title">Future Coasts Lite Simulator</span>
+        </div>
+      </div>
+      <div class="app-status">Live Coastal Model</div>
+    </div>
+
+    <header class="panel hero">
+      <div class="hero-head">
+        <div class="hero-copy">
+          <div class="eyebrow">Coastal Flood Demo</div>
+          <p class="hero-subtitle">Interactive coastal flood simulator for fast scenario testing.</p>
+          <h1 class="hero-title">Future Coasts <span class="hero-title-accent">Lite</span></h1>
+          <p class="intro">
+            Place houses on the map, raise the sea level, and see how many homes flood as the
+            estimated damage grows. The simulation logic stays the same, with a cleaner layout
+            and better mobile presentation.
+          </p>
+          <div class="hero-tags" aria-hidden="true">
+            <span class="hero-tag">Tap to place houses</span>
+            <span class="hero-tag">Compare flood presets</span>
+            <span class="hero-tag">Track estimated damage</span>
+          </div>
+        </div>
+
+        <div class="hint">
+          <div class="hint-label">Quick Tip</div>
+          <div class="hint-title">Scenario-ready in seconds</div>
+          <p class="hint-copy">Drop homes onto the board, adjust sea level, and watch exposure update instantly across the simulation.</p>
+          <div class="hint-pills" aria-hidden="true">
+            <span class="hint-pill">Low</span>
+            <span class="hint-pill">Medium</span>
+            <span class="hint-pill">Extreme</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel controls">
+        <div>
+          <h2 class="section-title">Controls</h2>
+          <p class="section-copy">Adjust the water level and compare low, medium, and extreme flood scenarios.</p>
+        </div>
+
+        <div class="slider-card">
+          <div class="slider-header">
+            <label class="slider-label" for="slider">Sea Level</label>
+            <div class="level-pill"><span id="level">0</span> px</div>
+          </div>
+
+          <input type="range" min="0" max="300" value="0" id="slider">
+          <div class="slider-scale" aria-hidden="true">
+            <span>Low</span>
+            <span>Mid</span>
+            <span>Extreme</span>
+          </div>
+          <p class="slider-note">Higher values push the water line upward from the bottom of the map.</p>
+        </div>
+
+        <div class="button-card">
+          <div class="button-card-head">
+            <div class="slider-label">Scenario Presets</div>
+            <div class="button-card-note">One-tap flood levels</div>
+          </div>
+          <div class="button-grid">
+            <button data-level="50" onclick="setLevel(50)">Low</button>
+            <button data-level="150" onclick="setLevel(150)">Medium</button>
+            <button data-level="250" onclick="setLevel(250)">Extreme</button>
+            <button class="secondary" onclick="resetGame()">Reset</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel canvas-panel">
+        <div class="canvas-board-head">
+          <div>
+            <div class="board-kicker">Map Surface</div>
+            <h2 class="board-title">Coastal Exposure Board</h2>
+            <p class="board-subtitle">A layered coastal view with shoreline, shallow water, and inland terrain detail.</p>
+          </div>
+          <div class="board-legend" aria-hidden="true">
+            <span class="legend-chip land">Land</span>
+            <span class="legend-chip shore">Tidal edge</span>
+            <span class="legend-chip water">Flood water</span>
+          </div>
+        </div>
+
+        <div class="canvas-stage">
+          <div class="canvas-stage-head" aria-hidden="true">
+            <div class="canvas-stage-chip">Dashboard Panel</div>
+            <div class="canvas-stage-status">Coastal simulation board</div>
+          </div>
+
+          <div class="canvas-frame">
+            <div class="canvas-overlay" aria-hidden="true">
+              <span class="canvas-overlay-mark"></span>
+              <div class="canvas-overlay-copy">
+                <span class="canvas-overlay-label">Live Board</span>
+                <span class="canvas-overlay-value">Coastal flood surface</span>
+              </div>
+            </div>
+            <div class="canvas-corner-tag" aria-hidden="true">Tap board to add homes</div>
+            <div class="canvas-viewport">
+              <div id="water-edge" class="water-edge" aria-hidden="true" style="--water-edge-y: 100%;"></div>
+              <canvas id="map" width="600" height="400"></canvas>
+            </div>
+          </div>
+
+          <p class="canvas-note">Flooded houses turn red. Safe houses stay light. Damage is calculated from flooded homes only.</p>
+        </div>
+      </section>
+    </main>
+
+    <section class="panel stats-shell">
+      <div class="stats-head">
+        <div>
+          <div class="stats-kicker">Analytics</div>
+          <h2 class="stats-title">Simulation Snapshot</h2>
+          <p class="stats-copy">Live portfolio totals update as houses are placed and water rises across the board.</p>
+        </div>
+        <div class="stats-pill">Live Totals</div>
+      </div>
+      <div id="stats" class="stats-grid" aria-live="polite">
+        <div class="stat-card">
+          <div class="stat-head">
+            <div class="stat-label">Houses</div>
+          </div>
+          <strong class="stat-value">0</strong>
+          <div class="stat-note">Placed across the board for the current scenario.</div>
+        </div>
+        <div class="stat-card is-flooded">
+          <div class="stat-head">
+            <div class="stat-label">Flooded</div>
+            <span class="stat-badge low">No exposure</span>
+          </div>
+          <strong class="stat-value">0</strong>
+          <div class="stat-note">0% of placed homes are below the current water line.</div>
+        </div>
+        <div class="stat-card is-damage">
+          <div class="stat-head">
+            <div class="stat-label">Damage</div>
+          </div>
+          <strong class="stat-value danger">$0</strong>
+          <div class="stat-note">Estimated loss based on flooded homes at $50,000 each.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("map");
+    const ctx = canvas.getContext("2d");
+
+    const slider = document.getElementById("slider");
+    const levelText = document.getElementById("level");
+    const stats = document.getElementById("stats");
+    const waterEdge = document.getElementById("water-edge");
+    const presetButtons = document.querySelectorAll("[data-level]");
+
+    let houses = [];
+
+    canvas.addEventListener("click", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      houses.push({
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+      });
+
+      draw();
+    });
+
+    slider.addEventListener("input", () => {
+      levelText.innerText = slider.value;
+      draw();
+    });
+
+    function setLevel(v) {
+      slider.value = v;
+      levelText.innerText = v;
+      draw();
+    }
+
+    function resetGame() {
+      houses = [];
+      draw();
+    }
+
+    function updatePresetButtons(seaLevel) {
+      presetButtons.forEach((button) => {
+        button.classList.toggle("is-active", Number(button.dataset.level) === seaLevel);
+      });
+    }
+
+    function roundedRectPath(x, y, width, height, radius) {
+      const r = Math.min(radius, width / 2, height / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + width - r, y);
+      ctx.arcTo(x + width, y, x + width, y + r, r);
+      ctx.lineTo(x + width, y + height - r);
+      ctx.arcTo(x + width, y + height, x + width - r, y + height, r);
+      ctx.lineTo(x + r, y + height);
+      ctx.arcTo(x, y + height, x, y + height - r, r);
+      ctx.lineTo(x, y + r);
+      ctx.arcTo(x, y, x + r, y, r);
+      ctx.closePath();
+    }
+
+    function drawHouse(h, flooded) {
+      ctx.save();
+      ctx.translate(h.x, h.y);
+
+      ctx.fillStyle = "rgba(6, 22, 34, 0.2)";
+      ctx.beginPath();
+      ctx.ellipse(0, 8, 10, 3.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      const bodyFill = flooded ? "#ffd7d7" : "#fbfdff";
+      const bodyStroke = flooded ? "#b84a4a" : "rgba(11, 31, 45, 0.42)";
+      const roofFill = flooded ? "#dc6262" : "#456477";
+      const windowFill = flooded ? "rgba(255, 238, 238, 0.85)" : "rgba(126, 206, 255, 0.82)";
+
+      ctx.strokeStyle = bodyStroke;
+      ctx.lineWidth = 1.35;
+
+      ctx.beginPath();
+      ctx.moveTo(-8, -1);
+      ctx.lineTo(0, -10);
+      ctx.lineTo(8, -1);
+      ctx.closePath();
+      ctx.fillStyle = roofFill;
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = bodyFill;
+      ctx.fillRect(-7, -1, 14, 11);
+      ctx.strokeRect(-7, -1, 14, 11);
+
+      ctx.fillStyle = flooded ? "#a53f3f" : "#355266";
+      ctx.fillRect(-2, 5, 4, 5);
+
+      ctx.fillStyle = windowFill;
+      ctx.fillRect(-5, 1, 3, 3);
+      ctx.fillRect(2, 1, 3, 3);
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.14)";
+      ctx.beginPath();
+      ctx.moveTo(-6, 0);
+      ctx.lineTo(6, 0);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawTerrain() {
+      const landGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      landGradient.addColorStop(0, "#7baa74");
+      landGradient.addColorStop(0.42, "#588d56");
+      landGradient.addColorStop(1, "#2f5735");
+      ctx.fillStyle = landGradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const terrainLight = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.55);
+      terrainLight.addColorStop(0, "rgba(223, 241, 206, 0.18)");
+      terrainLight.addColorStop(1, "rgba(223, 241, 206, 0)");
+      ctx.fillStyle = terrainLight;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const dryShelf = ctx.createLinearGradient(0, canvas.height * 0.68, 0, canvas.height);
+      dryShelf.addColorStop(0, "rgba(225, 210, 166, 0)");
+      dryShelf.addColorStop(0.55, "rgba(225, 210, 166, 0.18)");
+      dryShelf.addColorStop(1, "rgba(158, 132, 83, 0.16)");
+      ctx.fillStyle = dryShelf;
+      ctx.fillRect(0, canvas.height * 0.66, canvas.width, canvas.height * 0.34);
+
+      const coastBandGradient = ctx.createLinearGradient(0, canvas.height * 0.58, 0, canvas.height * 0.92);
+      coastBandGradient.addColorStop(0, "rgba(228, 214, 177, 0.02)");
+      coastBandGradient.addColorStop(0.4, "rgba(228, 214, 177, 0.18)");
+      coastBandGradient.addColorStop(1, "rgba(160, 133, 84, 0.18)");
+      ctx.fillStyle = coastBandGradient;
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height * 0.73);
+      for (let x = 0; x <= canvas.width; x += 14) {
+        const coastalY =
+          canvas.height * 0.71 +
+          Math.sin(x / 46) * 10 +
+          Math.sin(x / 17 + 1.1) * 3;
+        ctx.lineTo(x, coastalY);
+      }
+      ctx.lineTo(canvas.width, canvas.height);
+      ctx.lineTo(0, canvas.height);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.strokeStyle = "rgba(248, 236, 203, 0.34)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let x = 0; x <= canvas.width; x += 12) {
+        const coastalLineY =
+          canvas.height * 0.705 +
+          Math.sin(x / 46) * 9 +
+          Math.sin(x / 17 + 1.1) * 2.5;
+        if (x === 0) {
+          ctx.moveTo(x, coastalLineY);
+        } else {
+          ctx.lineTo(x, coastalLineY);
+        }
+      }
+      ctx.stroke();
+
+      ctx.strokeStyle = "rgba(244, 229, 194, 0.18)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let x = 0; x <= canvas.width; x += 16) {
+        const backCoastY =
+          canvas.height * 0.665 +
+          Math.sin(x / 54 + 0.5) * 8 +
+          Math.sin(x / 24) * 2;
+        if (x === 0) {
+          ctx.moveTo(x, backCoastY);
+        } else {
+          ctx.lineTo(x, backCoastY);
+        }
+      }
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(255, 255, 255, 0.07)";
+      for (let y = 38; y < canvas.height; y += 48) {
+        ctx.fillRect(0, y, canvas.width, 1);
+      }
+
+      ctx.strokeStyle = "rgba(34, 70, 40, 0.26)";
+      ctx.lineWidth = 1;
+      for (let y = 42; y < canvas.height; y += 56) {
+        ctx.beginPath();
+        for (let x = 0; x <= canvas.width; x += 18) {
+          const contourY = y + Math.sin((x / 44) + y * 0.06) * 4;
+          if (x === 0) {
+            ctx.moveTo(x, contourY);
+          } else {
+            ctx.lineTo(x, contourY);
+          }
+        }
+        ctx.stroke();
+      }
+
+      const duneGradient = ctx.createLinearGradient(0, canvas.height * 0.18, 0, canvas.height * 0.78);
+      duneGradient.addColorStop(0, "rgba(216, 198, 147, 0.22)");
+      duneGradient.addColorStop(1, "rgba(146, 121, 79, 0.12)");
+      ctx.fillStyle = duneGradient;
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height * 0.28);
+      for (let x = 0; x <= canvas.width; x += 20) {
+        const ridgeY = canvas.height * 0.24 + Math.sin((x / 58) + 1.2) * 14;
+        ctx.lineTo(x, ridgeY);
+      }
+      ctx.lineTo(canvas.width, canvas.height);
+      ctx.lineTo(0, canvas.height);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = "rgba(23, 64, 34, 0.16)";
+      for (let i = 0; i < 26; i++) {
+        const x = 22 + i * 24 + (i % 3) * 6;
+        const y = 52 + (i % 6) * 42;
+        const w = 24 + (i % 4) * 8;
+        const h = 10 + (i % 3) * 5;
+        ctx.beginPath();
+        ctx.ellipse(x, y, w, h, -0.35, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawLocationLabel(name, x, y) {
+      ctx.save();
+      ctx.font = '600 12px Inter, "Segoe UI", Arial, sans-serif';
+      const textWidth = ctx.measureText(name).width;
+      const boxX = x + 12;
+      const boxY = y - 16;
+      const boxWidth = textWidth + 18;
+      const boxHeight = 24;
+
+      ctx.strokeStyle = "rgba(230, 244, 251, 0.32)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + 9, y - 3);
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(7, 16, 26, 0.7)";
+      roundedRectPath(boxX, boxY, boxWidth, boxHeight, 12);
+      ctx.fill();
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+      roundedRectPath(boxX, boxY, boxWidth, boxHeight, 12);
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(245, 251, 255, 0.92)";
+      ctx.textBaseline = "middle";
+      ctx.fillText(name, boxX + 9, boxY + 12);
+
+      ctx.fillStyle = "#96e4ff";
+      ctx.beginPath();
+      ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = "rgba(85, 200, 255, 0.22)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(x, y, 7, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawNzLabels() {
+      drawLocationLabel("Auckland", 122, 94);
+      drawLocationLabel("Wellington", 238, 176);
+      drawLocationLabel("Christchurch", 312, 258);
+    }
+
+    function drawWaterLayers(waterTop, seaLevel) {
+      const shallowGradient = ctx.createLinearGradient(0, waterTop - 12, 0, canvas.height);
+      shallowGradient.addColorStop(0, "rgba(157, 236, 244, 0.32)");
+      shallowGradient.addColorStop(0.22, "rgba(107, 210, 229, 0.34)");
+      shallowGradient.addColorStop(1, "rgba(23, 94, 147, 0.78)");
+      ctx.fillStyle = shallowGradient;
+      ctx.fillRect(0, waterTop, canvas.width, canvas.height - waterTop);
+
+      ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+      for (let x = -40; x < canvas.width + 80; x += 44) {
+        ctx.beginPath();
+        ctx.ellipse(x + Math.sin((x / 24) + seaLevel * 0.02) * 6, waterTop + 22, 28, 8, 0.1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      const nearshoreGradient = ctx.createLinearGradient(0, waterTop - 20, 0, waterTop + 36);
+      nearshoreGradient.addColorStop(0, "rgba(240, 230, 192, 0.34)");
+      nearshoreGradient.addColorStop(1, "rgba(240, 230, 192, 0)");
+      ctx.fillStyle = nearshoreGradient;
+      ctx.fillRect(0, Math.max(0, waterTop - 20), canvas.width, 56);
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.72)";
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      for (let x = 0; x <= canvas.width; x += 10) {
+        const waveY = waterTop + Math.sin((x / 26) + (seaLevel / 20)) * 3.5;
+        if (x === 0) {
+          ctx.moveTo(x, waveY);
+        } else {
+          ctx.lineTo(x, waveY);
+        }
+      }
+      ctx.stroke();
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+      ctx.lineWidth = 1.1;
+      for (let offset = 24; offset < canvas.height - waterTop; offset += 34) {
+        ctx.beginPath();
+        for (let x = 0; x <= canvas.width; x += 16) {
+          const swellY = waterTop + offset + Math.sin((x / 40) + offset * 0.1 + seaLevel * 0.03) * 3;
+          if (x === 0) {
+            ctx.moveTo(x, swellY);
+          } else {
+            ctx.lineTo(x, swellY);
+          }
+        }
+        ctx.stroke();
+      }
+    }
+
+    function draw() {
+      const seaLevel = parseInt(slider.value, 10);
+      const waterHeight = Math.min(seaLevel, canvas.height);
+      const waterTop = canvas.height - waterHeight;
+
+      waterEdge.style.setProperty("--water-edge-y", `${(waterTop / canvas.height) * 100}%`);
+      waterEdge.classList.toggle("active", waterHeight > 0);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      drawTerrain();
+
+      if (waterHeight > 0) {
+        drawWaterLayers(waterTop, seaLevel);
+      }
+
+      drawNzLabels();
+
+      let floodedCount = 0;
+
+      houses.forEach((h) => {
+        const flooded = h.y > waterTop;
+        if (flooded) floodedCount++;
+        drawHouse(h, flooded);
+      });
+
+      const damage = floodedCount * 50000;
+      const floodRatio = houses.length ? floodedCount / houses.length : 0;
+
+      let riskLabel = "No exposure";
+      let riskClass = "low";
+
+      if (houses.length > 0 && floodedCount === 0) {
+        riskLabel = "Low risk";
+      } else if (floodRatio >= 0.75) {
+        riskLabel = "Critical";
+        riskClass = "critical";
+      } else if (floodRatio >= 0.4) {
+        riskLabel = "High risk";
+        riskClass = "high";
+      } else if (floodedCount > 0) {
+        riskLabel = "Watch";
+        riskClass = "watch";
+      }
+
+      stats.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-head">
+            <div class="stat-label">Houses</div>
+          </div>
+          <strong class="stat-value">${houses.length}</strong>
+          <div class="stat-note">Placed across the board for the current scenario.</div>
+        </div>
+        <div class="stat-card is-flooded">
+          <div class="stat-head">
+            <div class="stat-label">Flooded</div>
+            <span class="stat-badge ${riskClass}">${riskLabel}</span>
+          </div>
+          <strong class="stat-value">${floodedCount}</strong>
+          <div class="stat-note">${houses.length ? Math.round(floodRatio * 100) : 0}% of placed homes are below the current water line.</div>
+        </div>
+        <div class="stat-card is-damage">
+          <div class="stat-head">
+            <div class="stat-label">Damage</div>
+          </div>
+          <strong class="stat-value danger">$${damage.toLocaleString()}</strong>
+          <div class="stat-note">Estimated loss based on flooded homes at $50,000 each.</div>
+        </div>
+      `;
+
+      updatePresetButtons(seaLevel);
+    }
+
+    draw();
+  </script>
+
+
+</body></html>>
 <html>
 <head>
   <title>Future Coasts Lite</title>
